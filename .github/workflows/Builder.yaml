@@ -37,14 +37,21 @@ jobs:
         ls -l /home/runner/work/Dobby/Dobby/source/core/arch/
       shell: bash
 
-    - name: Sửa CMakeLists.txt
+    - name: Kiểm tra file assembler
       run: |
-        sed -i '/^project(/a include_directories(${CMAKE_SOURCE_DIR}/source/core/arch)' CMakeLists.txt
+        cat /home/runner/work/Dobby/Dobby/source/TrampolineBridge/ClosureTrampolineBridge/arm64/closure_trampoline_arm64.asm
       shell: bash
 
-    - name: Kiểm tra CMakeLists.txt
+    - name: Sửa file assembler
       run: |
-        cat CMakeLists.txt
+        sed -i 's/common_closure_bridge_handler@PAGE/common_closure_bridge_handler/g' /home/runner/work/Dobby/Dobby/source/TrampolineBridge/ClosureTrampolineBridge/arm64/closure_trampoline_arm64.asm
+        sed -i 's/common_closure_bridge_handler@PAGEOFF/#:lo12:common_closure_bridge_handler/g' /home/runner/work/Dobby/Dobby/source/TrampolineBridge/ClosureTrampolineBridge/arm64/closure_trampoline_arm64.asm
+      shell: bash
+
+    - name: Kiểm tra phiên bản NDK và Clang
+      run: |
+        /home/runner/opt/llvm-15.0.6/bin/clang --version
+        /home/runner/opt/ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang --version
       shell: bash
 
     - name: Khởi tạo môi trường biên dịch chéo Linux
