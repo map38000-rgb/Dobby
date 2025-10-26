@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout source
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Init Linux cross compile env
       run: |
@@ -54,8 +54,8 @@ jobs:
         ls -lha artifact || true
         ls -lha build || true
 
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+    - name: Upload artifacts (latest v4)
+      uses: actions/upload-artifact@v4
       with:
         name: dobby-arm64-artifacts
         path: |
