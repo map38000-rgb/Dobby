@@ -39,7 +39,12 @@ jobs:
 
     - name: Sửa CMakeLists.txt
       run: |
-        echo "include_directories(${CMAKE_SOURCE_DIR}/source/core/arch)" >> CMakeLists.txt
+        sed -i '/^project(/a include_directories(${CMAKE_SOURCE_DIR}/source/core/arch)' CMakeLists.txt
+      shell: bash
+
+    - name: Kiểm tra CMakeLists.txt
+      run: |
+        cat CMakeLists.txt
       shell: bash
 
     - name: Khởi tạo môi trường biên dịch chéo Linux
