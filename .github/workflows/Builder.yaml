@@ -25,37 +25,48 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  linux_and_android:
+  build_android_arm64:
     runs-on: ubuntu-latest
     needs: delete_latest_release
     steps:
     - name: checkout master
       uses: actions/checkout@master
 
-    - name: init linux cross compile env
+    - name: Kiểm tra file Cpu.h
+      run: |
+        ls -l /home/runner/work/Dobby/Dobby/source/core/arch/
+      shell: bash
+
+    - name: Sửa CMakeLists.txt
+      run: |
+        echo "include_directories(${CMAKE_SOURCE_DIR}/source/core/arch)" >> CMakeLists.txt
+      shell: bash
+
+    - name: Khởi tạo môi trường biên dịch chéo Linux
       run: |
         sh scripts/setup_linux_cross_compile.sh
         mkdir -p artifact
       shell: bash
 
-    - name: compile android
+    - name: Biên dịch Android arm64
       run: |
-        python3 scripts/platform_builder.py --platform=android --arch=all --cmake_dir=$HOME/opt/cmake-$CMAKE_VERSION --llvm_dir=$HOME/opt/llvm-$LLVM_VERSION --android_ndk_dir=$HOME/opt/ndk-$NDK_VERSION
+        python3 scripts/platform_builder.py --platform=android --arch=arm64-v8a --cmake_dir=$HOME/opt/cmake-$CMAKE_VERSION --llvm_dir=$HOME/opt/llvm-$LLVM_VERSION --android_ndk_dir=$HOME/opt/ndk-$NDK_VERSION
         cp include/dobby.h build/android
-        tar -zcvf build/dobby-android-all.tar.gz build/android
-        cp build/dobby-android-all.tar.gz artifact/
+        tar -zcvf build/dobby-android-arm64.tar.gz build/android
+        cp build/dobby-android-arm64.tar.gz artifact/
       shell: bash
 
-    - name: print output
+    - name: In kết quả đầu ra
       run: |
         ls -lha .
+      shell: bash
 
-    - name: update release
+    - name: Cập nhật release
       uses: ncipollo/release-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag: latest
         body: "a lightweight, multi-platform, multi-architecture exploit hook framework"
-        artifacts: "build/dobby-android-all.tar.gz"
+        artifacts: "build/dobby-android-arm64.tar.gz"
         allowUpdates: true
         replacesArtifacts: true
