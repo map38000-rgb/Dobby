@@ -112,6 +112,3 @@ uses: actions/checkout@master
     artifacts: "build/dobby-macos-all.tar.gz,build/dobby-iphoneos-all.tar.gz"  
     allowUpdates: true  
     replacesArtifacts: true
-
-Viết bản build cho arm64
-
